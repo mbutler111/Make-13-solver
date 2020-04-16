@@ -1,0 +1,98 @@
+''' Make 13 Solver '''
+def appList(mainList, addList):
+    mainList.append([])
+    for i in range(0,len(addList)):
+        mainList[len(mainList)-1].append(addList[i])
+
+def swapInd(swapList, ind1, ind2):
+    temp = swapList[ind1]
+    swapList[ind1] = swapList[ind2]
+    swapList[ind2] = temp
+
+def uniqueCombo(numsList):
+    newList = []
+    curSwap = 0
+    maxSwap = len(numsList) - 1
+    
+    for i in range(0,len(numsList)*(len(numsList)-1)):
+        appList(newList, numsList)
+        # print(newList)
+        if(curSwap < maxSwap):
+            swapInd(numsList, curSwap, curSwap+1)
+        else:
+            curSwap = 0
+            swapInd(numsList, curSwap, curSwap+1)
+        curSwap += 1
+            
+    return newList
+
+def expo(base, expon):
+    if(expon == 0):
+        return 1
+    
+    holder = base
+    for i in range(0,expon-1):
+        holder = holder * base
+    return holder
+
+def makeCombo(arr, size, totalElms):
+    if len(arr) == 0:
+        for i in range(0, expo(totalElms, size)):
+            arr.append([])
+        
+    current = 1
+    begin = 1
+    end = expo(totalElms,len(arr[0]))
+    for i in range(0, expo(totalElms, size)):
+        arr[i].append(current)
+        if begin == end:
+            begin = 1
+            if current == totalElms:
+                current = 1
+            else:
+                current += 1
+        else:
+            begin += 1
+            
+    if len(arr[0]) == size:
+        return
+    else:
+        makeCombo(arr, size, totalElms)
+        
+def completeOps(numsArr, opsArr):
+    total = numsArr[0]
+    for i in range(0,len(opsArr)):
+        if(opsArr[i] == 1):
+            total += numsArr[i+1]
+        elif(opsArr[i] == 2):
+            total -= numsArr[i+1]
+        elif(opsArr[i] == 3):
+            total *= numsArr[i+1]
+        elif(opsArr[i] == 4):
+            total /= numsArr[i+1]
+                
+    return total
+    
+def displayEqu(numsArr, opsArr):
+    print(numsArr[0], end="")
+    for i in range(0, len(opsArr)):
+        if opsArr[i] == 1:
+            print(" + " + str(numsArr[i+1]), end="")
+        if opsArr[i] == 2:
+            print(" - " + str(numsArr[i+1]), end="")
+        if opsArr[i] == 3:
+            print(" * " + str(numsArr[i+1]), end="")
+        if opsArr[i] == 4:
+            print(" / " + str(numsArr[i+1]), end="")
+        
+    print(" = 13")
+
+ops = []
+nums = [6,4,2,2,5,5]
+makeCombo(ops, len(nums)-1, 4)
+uniNums = uniqueCombo(nums)
+
+for i in range(0,len(ops)):
+    for j in range(0,len(uniNums)):
+        if completeOps(uniNums[j],ops[i]) == 13:
+            displayEqu(uniNums[j],ops[i])
